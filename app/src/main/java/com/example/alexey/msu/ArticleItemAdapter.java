@@ -10,6 +10,8 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,32 +58,54 @@ public class ArticleItemAdapter extends BaseAdapter {
         if (imageLoader == null)
             imageLoader = AppController.getInstance().getImageLoader();
 
+        TextView tvCategoryName = (TextView) convertView.findViewById(R.id.tvCategoryName);
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-        TextView tvAuthor = (TextView) convertView.findViewById(R.id.tvAuthor);
-        TextView tvDescription = (TextView) convertView.findViewById(R.id.tvDescription);
         TextView tvContent = (TextView) convertView.findViewById(R.id.tvContent);
-        TextView tvId = (TextView) convertView.findViewById(R.id.tvId);
-        TextView tvCreatedAt = (TextView) convertView.findViewById(R.id.tvCreatedAt);
-        TextView tvUpdatedAt = (TextView) convertView.findViewById(R.id.tvUpdatedAt);
+        TextView tvVideoAttach = (TextView) convertView.findViewById(R.id.tvVideoAttach);
+        TextView tvPostCreatedAt = (TextView) convertView.findViewById(R.id.tvPostCreatedAt);
+        TextView tvPostUpdatedAt = (TextView) convertView.findViewById(R.id.tvPostUpdatedAt);
+        TextView tvPostId = (TextView) convertView.findViewById(R.id.tvPostId);
 
-        FeedImageView photo = (FeedImageView) convertView.findViewById(R.id.photo);
+        FeedImageView mainImg = (FeedImageView) convertView.findViewById(R.id.mainImg);
 
         ArticleItem item = articleItems.get(position);
 
-        //вывод в текст вью
         tvTitle.setText(articleItems.get(position).getTitle());
-        tvAuthor.setText("By " + articleItems.get(position).getAuthor());
-        tvDescription.setText(articleItems.get(position).getDescription());
         tvContent.setText(articleItems.get(position).getContent());
-        tvId.setText("ID: " + articleItems.get(position).getId());
-        tvCreatedAt.setText(articleItems.get(position).getCreatedAt());
-        tvUpdatedAt.setText(articleItems.get(position).getUpdatedAt());
+        tvPostId.setText("ID: " + articleItems.get(position).getPost_id());
+        tvPostCreatedAt.setText(articleItems.get(position).getPost_createdAt());
+        tvPostUpdatedAt.setText(articleItems.get(position).getPost_createdAt());
+
+        // category
+        String catStr = "";
+        for (String cat : articleItems.get(position).getCategories()) {
+            cat=item.getCategory_name();
+            catStr += cat + ", ";
+        }
+        tvCategoryName.setText(catStr);
+
+        // Checking for null feed url
+        if (item.getVideo_attachments() != null) {
+            String vidStr="";
+            for (String vid : articleItems.get(position).getVideo_attachments()) {
+                vid = "<a href=\"" + item.getVideo_attachments() + "\">"
+                                + item.getVideo_attachments() + "</a> ";
+                vidStr += vid + "\n";
+            }
+            tvVideoAttach.setText(Html.fromHtml(vidStr));
+            // Making url clickable
+            //tvVideoAttach.setMovementMethod(LinkMovementMethod.getInstance());
+            tvVideoAttach.setVisibility(View.VISIBLE);
+        } else {
+        // url is null, remove from the view
+        tvVideoAttach.setVisibility(View.GONE);
+        }
 
         // вывод изображения
-        if (item.getPhoto_by() != null) {
-            photo.setImageUrl(item.getPhoto_by(), imageLoader);
-            photo.setVisibility(View.VISIBLE);
-            photo.setResponseObserver(new FeedImageView.ResponseObserver() {
+        if (item.getMain_img_url() != null) {
+            mainImg.setImageUrl(item.getMain_img_url(), imageLoader);
+            mainImg.setVisibility(View.VISIBLE);
+            mainImg.setResponseObserver(new FeedImageView.ResponseObserver() {
             @Override
             public void onError() {
             }
@@ -90,7 +114,7 @@ public class ArticleItemAdapter extends BaseAdapter {
             }
             });
         } else {
-            photo.setVisibility(View.GONE);
+            mainImg.setVisibility(View.GONE);
         }
 
         return convertView;

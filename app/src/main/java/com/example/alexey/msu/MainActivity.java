@@ -1,5 +1,6 @@
 package com.example.alexey.msu;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,16 +19,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Cache;
+import com.android.volley.Cache.Entry;
+import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 
 public class MainActivity extends Activity {
     // Log tag
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String url = "http://kanzitdinov.com/posts/getPosts"/*"http://m.uploadedit.com/b041/1412367445620.txt"*/;
+    private static final String URL_FEED = "http://kanzitdinov.com/api/getPosts";
     private ProgressDialog pDialog;//диалог загрузки
     private List<ArticleItem> articleList = new ArrayList<ArticleItem>();//массив с типом Статья
     private ListView listView;
@@ -36,8 +41,7 @@ public class MainActivity extends Activity {
     //переменные, которые будут экспортироваться во второе активити
     public static final String KEY_TITLE="title";
     public static final String KEY_CONTENT="content";
-    public static final String KEY_AUTHOR="author";
-    //public static final String KEY_PHOTO="photo_by";
+    public static final String KEY_PHOTO="main_img_url";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +51,14 @@ public class MainActivity extends Activity {
         listView = (ListView) findViewById(R.id.list);
         adapter = new ArticleItemAdapter(this, articleList);
         listView.setAdapter(adapter);
+        //listView.setCacheColorHint(0);
 
         pDialog = new ProgressDialog(this);
         // Showing progress dialog before making http request
         pDialog.setMessage("Loading...");
         pDialog.show();
 
-        //обработчик клика по элементам лист вью
+        //обработчик клика по элементам
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -64,15 +69,13 @@ public class MainActivity extends Activity {
 
                 intent.putExtra(KEY_TITLE, item.getTitle());
                 intent.putExtra(KEY_CONTENT, item.getContent());
-                //intent.putExtra(KEY_PHOTO, item.getPhoto_by());
-                intent.putExtra(KEY_AUTHOR, item.getAuthor());
+                intent.putExtra(KEY_PHOTO, item.getMain_img_url());
 
                 startActivity(intent);
             }
         });
 
-        // запрос json объекта через библиотеку volley
-        JsonArrayRequest articleReq = new JsonArrayRequest(url,
+        JsonArrayRequest articleReq = new JsonArrayRequest(URL_FEED,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -82,19 +85,38 @@ public class MainActivity extends Activity {
                         // Parsing json
                         for (int i = 0; i < response.length(); i++) {
                             try {
+
                                 JSONObject obj = response.getJSONObject(i);
 
                                 ArticleItem article = new ArticleItem();
 
                                 article.setTitle(obj.getString("title"));
-                                article.setAuthor(obj.getString("author"));
-                                article.setDescription(obj.getString("description"));
                                 article.setContent(obj.getString("content"));
-                                article.setPhoto_by(obj.getString("photo_by"));
-                                article.setId(obj.getString("id"));
-                                article.setCreatedAt(obj.getString("createdAt"));
-                                article.setUpdatedAt(obj.getString("updatedAt"));
+                                article.setPost_createdAt(obj.getString("createdAt"));
+                                article.setPost_updatedAt(obj.getString("updatedAt"));
+                                article.setPost_id(obj.getString("id"));
 
+                                String image = obj.isNull("main_img_url") ? null : obj
+                                        .getString("main_img_url");
+                                article.setMain_img_url(image);
+
+                                // video is json array
+                                JSONArray videoArray = obj.getJSONArray("video_attachments");
+                                ArrayList<String> video = new ArrayList<String>();
+                                for (int j = 0; j < videoArray.length(); j++) {
+                                    video.add((String) videoArray.get(j));
+                                }
+                                article.setVideo_attachments(video);
+
+                                JSONArray catArray = obj.getJSONArray("categories");
+                                ArrayList<String> cat = new ArrayList<String>();
+                                for (int j = 0; j < catArray.length(); j++) {
+                                    JSONObject catObj = (JSONObject) catArray.get(j);
+                                    cat.add((String)catObj.getString("category_name"));
+                                }
+                                article.setCategories(cat);
+
+                                // adding movie to movies array
                                 articleList.add(article);
 
                             } catch (JSONException e) {
@@ -107,18 +129,17 @@ public class MainActivity extends Activity {
                         // so that it renders the list view with updated data
                         adapter.notifyDataSetChanged();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                hidePDialog();
+            }, new Response.ErrorListener() {
 
-                Toast.makeText(getApplicationContext(), "Unable to fetch data from server. Check your Internet connection.", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    hidePDialog();
+                }
+            });
 
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(articleReq);
+            // Adding request to volley request queue
+            AppController.getInstance().addToRequestQueue(articleReq);
     }
 
     @Override
