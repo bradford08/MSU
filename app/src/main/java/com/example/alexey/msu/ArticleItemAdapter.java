@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -58,13 +59,13 @@ public class ArticleItemAdapter extends BaseAdapter {
         if (imageLoader == null)
             imageLoader = AppController.getInstance().getImageLoader();
 
-        TextView tvCategoryName = (TextView) convertView.findViewById(R.id.tvCategoryName);
+        //TextView tvCategoryName = (TextView) convertView.findViewById(R.id.tvCategoryName);
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
         TextView tvContent = (TextView) convertView.findViewById(R.id.tvContent);
-        TextView tvVideoAttach = (TextView) convertView.findViewById(R.id.tvVideoAttach);
-        TextView tvPostCreatedAt = (TextView) convertView.findViewById(R.id.tvPostCreatedAt);
-        TextView tvPostUpdatedAt = (TextView) convertView.findViewById(R.id.tvPostUpdatedAt);
-        TextView tvPostId = (TextView) convertView.findViewById(R.id.tvPostId);
+        //TextView tvVideoAttach = (TextView) convertView.findViewById(R.id.tvVideoAttach);
+        //TextView tvPostCreatedAt = (TextView) convertView.findViewById(R.id.tvPostCreatedAt);
+        //TextView tvPostUpdatedAt = (TextView) convertView.findViewById(R.id.tvPostUpdatedAt);
+        //TextView tvPostId = (TextView) convertView.findViewById(R.id.tvPostId);
 
         FeedImageView mainImg = (FeedImageView) convertView.findViewById(R.id.mainImg);
 
@@ -72,20 +73,20 @@ public class ArticleItemAdapter extends BaseAdapter {
 
         tvTitle.setText(articleItems.get(position).getTitle());
         tvContent.setText(articleItems.get(position).getContent());
-        tvPostId.setText("ID: " + articleItems.get(position).getPost_id());
-        tvPostCreatedAt.setText(articleItems.get(position).getPost_createdAt());
-        tvPostUpdatedAt.setText(articleItems.get(position).getPost_createdAt());
+        //tvPostId.setText("ID: " + articleItems.get(position).getPost_id());
+        //tvPostCreatedAt.setText(articleItems.get(position).getPost_createdAt());
+        //tvPostUpdatedAt.setText(articleItems.get(position).getPost_createdAt());
 
         // category
-        String catStr = "";
+        /*String catStr = "";
         for (String cat : articleItems.get(position).getCategories()) {
             cat=item.getCategory_name();
             catStr += cat + ", ";
         }
-        tvCategoryName.setText(catStr);
+        tvCategoryName.setText(catStr);*/
 
         // Checking for null feed url
-        if (item.getVideo_attachments() != null) {
+        /*if (item.getVideo_attachments() != null) {
             String vidStr="";
             for (String vid : articleItems.get(position).getVideo_attachments()) {
                 vid = "<a href=\"" + item.getVideo_attachments() + "\">"
@@ -99,7 +100,7 @@ public class ArticleItemAdapter extends BaseAdapter {
         } else {
         // url is null, remove from the view
         tvVideoAttach.setVisibility(View.GONE);
-        }
+        }*/
 
         // вывод изображения
         if (item.getMain_img_url() != null) {

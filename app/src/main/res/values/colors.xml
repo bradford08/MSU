@@ -8,4 +8,5 @@
     <color name="timestamp">#a0a3a7</color>
     <color name="header">#FFCC0D</color>#2C3843
     <color name="msu_bg">#2C3843</color>
+    <color name="msu_head">#2D3E50</color>
 </resources>
