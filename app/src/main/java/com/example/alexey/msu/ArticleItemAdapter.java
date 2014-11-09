@@ -59,7 +59,7 @@ public class ArticleItemAdapter extends BaseAdapter {
         if (imageLoader == null)
             imageLoader = AppController.getInstance().getImageLoader();
 
-        //TextView tvCategoryName = (TextView) convertView.findViewById(R.id.tvCategoryName);
+        TextView tvCategories = (TextView) convertView.findViewById(R.id.tvCategories);
         TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
         TextView tvContent = (TextView) convertView.findViewById(R.id.tvContent);
         //TextView tvVideoAttach = (TextView) convertView.findViewById(R.id.tvVideoAttach);
@@ -78,28 +78,23 @@ public class ArticleItemAdapter extends BaseAdapter {
         //tvPostUpdatedAt.setText(articleItems.get(position).getPost_createdAt());
 
         // category
-        /*String catStr = "";
+        String catStr = "Категории: ";
         for (String cat : articleItems.get(position).getCategories()) {
-            cat=item.getCategory_name();
-            catStr += cat + ", ";
+            catStr += cat + " ";
         }
-        tvCategoryName.setText(catStr);*/
+        tvCategories.setText(catStr);
 
         // Checking for null feed url
-        /*if (item.getVideo_attachments() != null) {
-            String vidStr="";
-            for (String vid : articleItems.get(position).getVideo_attachments()) {
-                vid = "<a href=\"" + item.getVideo_attachments() + "\">"
-                                + item.getVideo_attachments() + "</a> ";
-                vidStr += vid + "\n";
-            }
-            tvVideoAttach.setText(Html.fromHtml(vidStr));
+        /*if (item.getVideo() != null) {
+            String vid = "<a href=\"" + item.getVideo() + "\">"
+                               + item.getVideo() + "</a> ";
+            tvVideoAttach.setText(Html.fromHtml(vid));
             // Making url clickable
-            //tvVideoAttach.setMovementMethod(LinkMovementMethod.getInstance());
+            tvVideoAttach.setMovementMethod(LinkMovementMethod.getInstance());
             tvVideoAttach.setVisibility(View.VISIBLE);
         } else {
-        // url is null, remove from the view
-        tvVideoAttach.setVisibility(View.GONE);
+            // url is null, remove from the view
+            tvVideoAttach.setVisibility(View.GONE);
         }*/
 
         // вывод изображения

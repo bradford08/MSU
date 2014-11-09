@@ -21,9 +21,10 @@ public class ArticleItem {
             category_name_for_url,
             createdAt,
             updatedAt,
-            id;
+            id,
+            video;
 
-    private ArrayList<String>categories;
+    private ArrayList<String> categories;
     private ArrayList<String> photo_attachments;
     private ArrayList<String> video_attachments;
 
@@ -34,22 +35,24 @@ public class ArticleItem {
                        String content,
                        String post_createdAt,
                        String main_img_url,
-                       //ArrayList<String> photo_attachments,
+                       ArrayList<String> photo_attachments,
                        String title,
                        String post_id,
                        String post_updatedAt,
-                       ArrayList<String> video_attachments/*,
+                       ArrayList<String> video_attachments,
+                       String video/*,
                        String category_name*/) {
         super();
         this.categories=categories;
         this.setContent(content);
         this.setPost_createdAt(post_createdAt);
         this.setMain_img_url(main_img_url);
-        //this.photo_attachments = photo_attachments;
+        this.photo_attachments = photo_attachments;
         this.setTitle(title);
         this.setPost_updatedAt(post_updatedAt);
         this.video_attachments = video_attachments;
         this.setPost_id(post_id);
+        this.setVideo(video);
         //this.setCategory_name(category_name);
     }
     /*public ArticleItem(ArrayList<String> categories,
@@ -203,6 +206,14 @@ public class ArticleItem {
 
     public void setCategories(ArrayList<String> categories) {
         this.categories = categories;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
     }
 }
 

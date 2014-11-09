@@ -1,6 +1,7 @@
 package com.example.alexey.msu;
 
 import java.io.UnsupportedEncodingException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,10 @@ public class MainActivity extends Activity {
     public static final String KEY_TITLE="title";
     public static final String KEY_CONTENT="content";
     public static final String KEY_PHOTO="main_img_url";
+    public static final String KEY_PHOTO_GALLERY="photo_attachments";
+    public static final String KEY_POSITION = "";
+    public static final String KEY_VIDEO= "video_attachments";
+
     private MenuItem refreshMenuItem;
 
     public Cache cache = AppController.getInstance().getRequestQueue().getCache();
@@ -68,6 +73,9 @@ public class MainActivity extends Activity {
                 intent.putExtra(KEY_TITLE, item.getTitle());
                 intent.putExtra(KEY_CONTENT, item.getContent());
                 intent.putExtra(KEY_PHOTO, item.getMain_img_url());
+                intent.putExtra(KEY_PHOTO_GALLERY, item.getPhoto_attachments());
+                intent.putExtra(KEY_POSITION, position);
+                intent.putExtra(KEY_VIDEO, item.getVideo());
 
                 startActivity(intent);
             }
@@ -76,7 +84,9 @@ public class MainActivity extends Activity {
     }
 
     private void volleyWork() {
+        cache.clear();//не забудь
         Entry entry = cache.get(URL_FEED);
+
         // Showing progress dialog before making http request
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Загрузка...");
@@ -102,6 +112,8 @@ public class MainActivity extends Activity {
             }
 
         } else {
+            cache.clear();
+
             JsonArrayRequest articleReq = new JsonArrayRequest(URL_FEED,
                     new Response.Listener<JSONArray>() {
                         @Override
@@ -117,7 +129,7 @@ public class MainActivity extends Activity {
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
                     Toast.makeText(getApplicationContext(),
                             "Не могу получить данные с сервера.\n" +
-                                    "Проверьте свое Интернет соединение.",
+                                    "Проверьте ваше Интернет соединение.",
                             Toast.LENGTH_SHORT).show();
                     hidePDialog();
                 }
@@ -146,23 +158,30 @@ public class MainActivity extends Activity {
                         .getString("main_img_url");
                 article.setMain_img_url(image);
 
-                // video is json array
                 JSONArray videoArray = obj.getJSONArray("video_attachments");
-                ArrayList<String> video = new ArrayList<String>();
-                for (int j = 0; j < videoArray.length(); j++) {
-                    video.add((String) videoArray.get(j));
-                }
-                article.setVideo_attachments(video);
+                //if (videoArray != null)
+                  //  article.setVideo((String) videoArray.get(0));
+                //else
+                  //  article.setVideo(null);
+                String video = videoArray.isNull(0) ? null : videoArray.getString(0);
+                article.setVideo(video);
 
-                /*JSONArray catArray = obj.getJSONArray("categories");
+                JSONArray imgArray = obj.getJSONArray("photo_attachments");
+                ArrayList<String> img = new ArrayList<String>();
+                for (int j = 0; j < imgArray.length(); j++) {
+                    img.add((String) imgArray.get(j));
+                }
+                article.setPhoto_attachments(img);
+
+                JSONArray catArray = obj.getJSONArray("categories");
                 ArrayList<String> cat = new ArrayList<String>();
                 for (int j = 0; j < catArray.length(); j++) {
-                    JSONObject catObj = (JSONObject) catArray.get(j);
-                    cat.add((String)catObj.getString("category_name"));
+                    JSONObject catObject = catArray.getJSONObject(j);
+                    String category = catObject.getString("category_name");
+                    cat.add(category);
                 }
-                article.setCategories(cat);*/
+                article.setCategories(cat);
 
-                // adding movie to movies array
                 articleList.add(article);
 
             } catch (JSONException e) {
@@ -213,33 +232,4 @@ public class MainActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    /*private class SyncData extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            // set the progress bar view
-            refreshMenuItem.setActionView(R.layout.activity_main);
-
-            refreshMenuItem.expandActionView();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            // not making real request in this demo
-            // for now we use a timer to wait for sometime
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            refreshMenuItem.collapseActionView();
-            // remove the progress bar view
-            refreshMenuItem.setActionView(null);
-        }
-    };*/
-
 }

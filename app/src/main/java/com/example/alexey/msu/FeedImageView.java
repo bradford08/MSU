@@ -11,6 +11,7 @@ package com.example.alexey.msu;
  *
  */
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -62,14 +63,26 @@ public class FeedImageView extends ImageView {
      */
     private ImageContainer mImageContainer;
 
+    private int adjustAspect = 1;
+
     public FeedImageView(Context context) {
         this(context, null);
     }
 
-    public FeedImageView(Context context, AttributeSet attrs) {
+    /*public FeedImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
-    }
+    }*/
 
+    public FeedImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.AspectChecker, 0, 0);
+        try {
+            adjustAspect = ta.getInt(R.styleable.AspectChecker_adjustAspect,1);
+        } finally {
+            ta.recycle();
+        }
+    }
     public FeedImageView(Context context, AttributeSet attrs,
                          int defStyle) {
         super(context, attrs, defStyle);
@@ -201,7 +214,8 @@ public class FeedImageView extends ImageView {
                             setImageBitmap(response.getBitmap());
                             bWidth = response.getBitmap().getWidth();
                             bHeight = response.getBitmap().getHeight();
-                            adjustImageAspect(bWidth, bHeight);
+                            if(adjustAspect != 0)
+                                adjustImageAspect(bWidth, bHeight);
 
                         } else if (mDefaultImageId != 0) {
                             setImageResource(mDefaultImageId);

@@ -44,7 +44,15 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:scaleType="fitXY"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:src="@drawable/placeholder" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_shape"
+                android:text="Всего фотографий: "
+                android:id="@+id/btnImg" />
 
             <TextView
                 android:id="@+id/tvContent"
@@ -54,16 +62,20 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="5dp"
                 android:paddingTop="10dp"
+                android:textSize="18dp"
+                android:textIsSelectable="false"
                 android:paddingBottom="10dp" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tvVideo"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:linksClickable="true"
-                android:paddingLeft="@dimen/feed_item_status_pad_left_right"
-                android:paddingRight="@dimen/feed_item_status_pad_left_right"
-                android:textColorLink="@color/link" />
+                android:textColorLink="@color/link"
+                android:text="http://jsonviewer.stack.hu/"
+                android:paddingLeft="20dp"
+                android:textSize="18dp"
+                android:paddingBottom="10dp" />
 
         </LinearLayout>
     </ScrollView>
