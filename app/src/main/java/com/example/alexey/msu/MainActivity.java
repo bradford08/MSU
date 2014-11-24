@@ -10,10 +10,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +41,7 @@ public class MainActivity extends Activity {
     // Log tag
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String URL_FEED = "http://kanzitdinov.com/api/getPosts";
+    private static final String URL_FEED = "http://msulife.com/api/getPosts";
     private ProgressDialog pDialog;//диалог загрузки
     private List<ArticleItem> articleList = new ArrayList<ArticleItem>();//массив с типом Статья
     private ListView listView;
@@ -51,6 +57,15 @@ public class MainActivity extends Activity {
 
     private MenuItem refreshMenuItem;
 
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+    private ArrayList<ArticleItem> navDrawerItems;
+    private NavDrawerListAdapter navAdapter;
+
     public Cache cache = AppController.getInstance().getRequestQueue().getCache();
 
     @Override
@@ -60,6 +75,49 @@ public class MainActivity extends Activity {
         listView = (ListView) findViewById(R.id.list);
 
         volleyWork();
+
+        mTitle = mDrawerTitle = getTitle();
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+
+        navDrawerItems = new ArrayList<ArticleItem>();
+
+        for (ArticleItem a : navDrawerItems) {
+            navDrawerItems.add(new ArticleItem(a.getTitle()));
+        }
+
+        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+
+        // Setting the nav drawer list adapter
+
+        navAdapter = new NavDrawerListAdapter(getApplicationContext(),
+                navDrawerItems);
+        mDrawerList.setAdapter(navAdapter);
+
+
+        // Enabling action bar app icon and behaving it as toggle button
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        /*getActionBar().setIcon(
+                new ColorDrawable(getResources().getColor(
+                        android.R.color.transparent)));*/
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+                // calling onPrepareOptionsMenu() to show action bar icons
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(mDrawerTitle);
+                // calling onPrepareOptionsMenu() to hide action bar icons
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         //обработчик клика по элементам
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -81,6 +139,90 @@ public class MainActivity extends Activity {
             }
         });
 
+        if (savedInstanceState == null) {
+            // on first time display view for first nav item
+            displayView(0);
+        }
+    }
+
+    /**
+     * Navigation drawer menu item click listener
+     * */
+    private class SlideMenuClickListener implements
+            ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
+            // display view for selected nav drawer item
+            displayView(position);
+        }
+    }
+
+    /**
+     * Diplaying fragment view for selected nav drawer list item
+     * */
+    private void displayView(int position) {
+        // update the main content by replacing fragments
+        Fragment fragment = null;
+        /*switch (position) {
+            case 0:
+                // Recently added item selected
+                // don't pass album id to home fragment
+                fragment = GridFragment.newInstance(null);
+                break;
+
+            default:
+                // selected wallpaper category
+                // send album id to home fragment to list all the wallpapers
+                String albumId = albumsList.get(position).getId();
+                fragment = GridFragment.newInstance(albumId);
+                break;
+        }*/
+
+        if (fragment != null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.list, fragment).commit();
+
+            // update selected item and title, then close the drawer
+            mDrawerList.setItemChecked(position, true);
+            mDrawerList.setSelection(position);
+            setTitle(navDrawerItems.get(position).getTitle());
+            mDrawerLayout.closeDrawer(mDrawerList);
+        } else {
+            // error in creating fragment
+            Log.e(TAG, "Error in creating fragment");
+        }
+    }
+
+    /**
+     * Called when invalidateOptionsMenu() is triggered
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // if nav drawer is opened, hide the action items
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    /**
+     * When using the ActionBarDrawerToggle, you must call it during
+     * onPostCreate() and onConfigurationChanged()...
+     */
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggles
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     private void volleyWork() {
@@ -147,7 +289,9 @@ public class MainActivity extends Activity {
                 JSONObject obj = response.getJSONObject(i);
 
                 ArticleItem article = new ArticleItem();
+                ArticleItem navArticle = new ArticleItem();
 
+                navArticle.setTitle(obj.getString("title"));
                 article.setTitle(obj.getString("title"));
                 article.setContent(obj.getString("content"));
                 article.setPost_createdAt(obj.getString("createdAt"));
@@ -183,6 +327,7 @@ public class MainActivity extends Activity {
                 article.setCategories(cat);
 
                 articleList.add(article);
+                navDrawerItems.add(navArticle);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -193,6 +338,7 @@ public class MainActivity extends Activity {
         // notifying list adapter about data changes
         // so that it renders the list view with updated data
         adapter.notifyDataSetChanged();
+        navAdapter.notifyDataSetChanged();
     }
     @Override
     public void onDestroy() {
@@ -216,6 +362,9 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         // Take appropriate action for each action item click
         switch (item.getItemId()) {
             case R.id.action_refresh:

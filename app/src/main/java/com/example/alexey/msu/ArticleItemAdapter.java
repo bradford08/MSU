@@ -6,6 +6,7 @@ package com.example.alexey.msu;
  * Это адаптер для listview, который выводит
  * в текст вью преобразованные json данные
  */
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -25,6 +26,8 @@ public class ArticleItemAdapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
     private List<ArticleItem> articleItems;
+    private Context context;
+
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public ArticleItemAdapter(Activity activity, List<ArticleItem> articleItems) {
@@ -115,5 +118,26 @@ public class ArticleItemAdapter extends BaseAdapter {
 
         return convertView;
     }
+
+    public ArticleItemAdapter(Context context,
+                                ArrayList<ArticleItem> articleItems) {
+        this.context = context;
+        this.articleItems = articleItems;
+    }
+
+    public View getNavView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            LayoutInflater mInflater = (LayoutInflater) context
+                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            convertView = mInflater.inflate(R.layout.drawer_list_item, null);
+        }
+
+        TextView txtTitle = (TextView) convertView.findViewById(R.id.title);
+
+        txtTitle.setText(articleItems.get(position).getTitle());
+
+        return convertView;
+    }
+
 
 }

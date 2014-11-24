@@ -31,6 +31,11 @@ public class ArticleItem {
     public ArticleItem() {
     }
 
+    public ArticleItem(String category_name) {
+        super();
+        this.setCategory_name(category_name);
+    }
+
     public ArticleItem(ArrayList<String> categories,
                        String content,
                        String post_createdAt,
