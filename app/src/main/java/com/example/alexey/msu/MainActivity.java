@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private ArrayList<ArticleItem> navDrawerItems;
+    private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter navAdapter;
 
     public Cache cache = AppController.getInstance().getRequestQueue().getCache();
@@ -81,16 +81,27 @@ public class MainActivity extends Activity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
 
-        navDrawerItems = new ArrayList<ArticleItem>();
-
+        //navDrawerItems = new ArrayList<ArticleItem>();
+/*
         for (ArticleItem a : navDrawerItems) {
             navDrawerItems.add(new ArticleItem(a.getTitle()));
-        }
+        }*/
 
         mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
 
         // Setting the nav drawer list adapter
 
+        navDrawerItems = new ArrayList<NavDrawerItem>();
+
+        navDrawerItems.add(new NavDrawerItem("Хроника"));
+        navDrawerItems.add(new NavDrawerItem("Детали"));
+       /* navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
+        navDrawerItems.add(new NavDrawerItem("");*/
+
+
+        // setting the nav drawer list adapter
         navAdapter = new NavDrawerListAdapter(getApplicationContext(),
                 navDrawerItems);
         mDrawerList.setAdapter(navAdapter);
@@ -99,9 +110,6 @@ public class MainActivity extends Activity {
         // Enabling action bar app icon and behaving it as toggle button
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        /*getActionBar().setIcon(
-                new ColorDrawable(getResources().getColor(
-                        android.R.color.transparent)));*/
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.drawable.ic_drawer, R.string.app_name, R.string.app_name) {
@@ -289,9 +297,9 @@ public class MainActivity extends Activity {
                 JSONObject obj = response.getJSONObject(i);
 
                 ArticleItem article = new ArticleItem();
-                ArticleItem navArticle = new ArticleItem();
+                //ArticleItem navArticle = new ArticleItem();
 
-                navArticle.setTitle(obj.getString("title"));
+               // navArticle.setTitle(obj.getString("title"));
                 article.setTitle(obj.getString("title"));
                 article.setContent(obj.getString("content"));
                 article.setPost_createdAt(obj.getString("createdAt"));
@@ -326,8 +334,10 @@ public class MainActivity extends Activity {
                 }
                 article.setCategories(cat);
 
-                articleList.add(article);
-                navDrawerItems.add(navArticle);
+                //for(String catExcept : article.getId())
+                    //if( article.getId()=="543268d9dcd9896d0c9494dc")
+                        articleList.add(article);
+                //navDrawerItems.add(navArticle);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -338,7 +348,7 @@ public class MainActivity extends Activity {
         // notifying list adapter about data changes
         // so that it renders the list view with updated data
         adapter.notifyDataSetChanged();
-        navAdapter.notifyDataSetChanged();
+        //navAdapter.notifyDataSetChanged();
     }
     @Override
     public void onDestroy() {
