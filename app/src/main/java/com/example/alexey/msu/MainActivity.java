@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NavigableMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +41,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 public class MainActivity extends Activity {
     // Log tag
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String EXC = "mesta";
 
+    //private static final String URL_FEED = "http://msulife.com/api/getCategories";
     private static final String URL_FEED = "http://msulife.com/api/getPosts";
     private ProgressDialog pDialog;//диалог загрузки
     private List<ArticleItem> articleList = new ArrayList<ArticleItem>();//массив с типом Статья
@@ -55,8 +58,7 @@ public class MainActivity extends Activity {
     public static final String KEY_POSITION = "";
     public static final String KEY_VIDEO= "video_attachments";
 
-    private MenuItem refreshMenuItem;
-
+    private String[] navMenuTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -74,7 +76,10 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         listView = (ListView) findViewById(R.id.list);
 
-        volleyWork();
+        // load slide menu items
+        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
+
+        //volleyWork(null);
 
         mTitle = mDrawerTitle = getTitle();
 
@@ -93,13 +98,10 @@ public class MainActivity extends Activity {
 
         navDrawerItems = new ArrayList<NavDrawerItem>();
 
-        navDrawerItems.add(new NavDrawerItem("Хроника"));
-        navDrawerItems.add(new NavDrawerItem("Детали"));
-       /* navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1)));
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-        navDrawerItems.add(new NavDrawerItem("");*/
 
+        navDrawerItems.add(new NavDrawerItem("Все новости"));
+        for (int i = 0; i < navMenuTitles.length; i++)
+            navDrawerItems.add(new NavDrawerItem(navMenuTitles[i]));
 
         // setting the nav drawer list adapter
         navAdapter = new NavDrawerListAdapter(getApplicationContext(),
@@ -128,7 +130,7 @@ public class MainActivity extends Activity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         //обработчик клика по элементам
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long offset) {
@@ -145,7 +147,7 @@ public class MainActivity extends Activity {
 
                 startActivity(intent);
             }
-        });
+        });*/
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
@@ -172,20 +174,20 @@ public class MainActivity extends Activity {
     private void displayView(int position) {
         // update the main content by replacing fragments
         Fragment fragment = null;
-        /*switch (position) {
+        switch (position) {
             case 0:
                 // Recently added item selected
                 // don't pass album id to home fragment
-                fragment = GridFragment.newInstance(null);
+                fragment = NavDrawerFragment.newInstance(null);
                 break;
 
             default:
                 // selected wallpaper category
                 // send album id to home fragment to list all the wallpapers
-                String albumId = albumsList.get(position).getId();
-                fragment = GridFragment.newInstance(albumId);
+                String categoryTitle = navDrawerItems.get(position).getTitle();
+                fragment = NavDrawerFragment.newInstance(categoryTitle);
                 break;
-        }*/
+        }
 
         if (fragment != null) {
             FragmentManager fragmentManager = getFragmentManager();
@@ -233,7 +235,7 @@ public class MainActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    private void volleyWork() {
+    /*private void volleyWork(final String category) {
         cache.clear();//не забудь
         Entry entry = cache.get(URL_FEED);
 
@@ -251,7 +253,7 @@ public class MainActivity extends Activity {
             try {
                 String data = new String(entry.data, "UTF-8");
                 try {
-                    parseJsonFeed(new JSONArray(data));
+                    parseJsonFeed(new JSONArray(data), null);
                     //не забудь про эту штуку
                     hidePDialog();
                 } catch (JSONException e) {
@@ -268,10 +270,10 @@ public class MainActivity extends Activity {
                     new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
-                            Log.d(TAG, response.toString());
+                            //Log.d(TAG, response.toString());
                             hidePDialog();
                             if (response != null)
-                                parseJsonFeed(response);
+                                parseJsonFeed(response,category);
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -289,17 +291,14 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void parseJsonFeed(JSONArray response){
+    private void parseJsonFeed(JSONArray response, String category){
         // Parsing json
         for (int i = 0; i < response.length(); i++) {
             try {
 
                 JSONObject obj = response.getJSONObject(i);
-
                 ArticleItem article = new ArticleItem();
-                //ArticleItem navArticle = new ArticleItem();
 
-               // navArticle.setTitle(obj.getString("title"));
                 article.setTitle(obj.getString("title"));
                 article.setContent(obj.getString("content"));
                 article.setPost_createdAt(obj.getString("createdAt"));
@@ -311,10 +310,6 @@ public class MainActivity extends Activity {
                 article.setMain_img_url(image);
 
                 JSONArray videoArray = obj.getJSONArray("video_attachments");
-                //if (videoArray != null)
-                  //  article.setVideo((String) videoArray.get(0));
-                //else
-                  //  article.setVideo(null);
                 String video = videoArray.isNull(0) ? null : videoArray.getString(0);
                 article.setVideo(video);
 
@@ -329,15 +324,18 @@ public class MainActivity extends Activity {
                 ArrayList<String> cat = new ArrayList<String>();
                 for (int j = 0; j < catArray.length(); j++) {
                     JSONObject catObject = catArray.getJSONObject(j);
-                    String category = catObject.getString("category_name");
-                    cat.add(category);
+                    String categories = catObject.getString("category_name");
+                    cat.add(categories);
                 }
                 article.setCategories(cat);
 
-                //for(String catExcept : article.getId())
-                    //if( article.getId()=="543268d9dcd9896d0c9494dc")
-                        articleList.add(article);
-                //navDrawerItems.add(navArticle);
+                if (category!=null)
+                    for(String catExcept : cat) {
+                        if (catExcept.equals(category))
+                            articleList.add(article);
+                    }
+                else
+                    articleList.add(article);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -348,8 +346,7 @@ public class MainActivity extends Activity {
         // notifying list adapter about data changes
         // so that it renders the list view with updated data
         adapter.notifyDataSetChanged();
-        //navAdapter.notifyDataSetChanged();
-    }
+    }*/
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -377,12 +374,12 @@ public class MainActivity extends Activity {
         }
         // Take appropriate action for each action item click
         switch (item.getItemId()) {
-            case R.id.action_refresh:
-                refreshMenuItem = item;
+            /*case R.id.action_refresh:
+                //refreshMenuItem = item;
                 cache.clear();
                 listView.setAdapter(null);
-                volleyWork();
-                return true;
+                volleyWork(null);
+                return true;*/
             case R.id.action_settings:
                 Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
                 startActivity(intent);

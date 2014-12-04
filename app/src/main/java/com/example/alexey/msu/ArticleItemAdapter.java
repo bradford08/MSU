@@ -81,11 +81,11 @@ public class ArticleItemAdapter extends BaseAdapter {
         //tvPostUpdatedAt.setText(articleItems.get(position).getPost_createdAt());
 
         // category
-        String catStr = "Категории: ";
+        /*String catStr = "Категории: ";
         for (String cat : articleItems.get(position).getCategories()) {
             catStr += cat + " ";
         }
-        tvCategories.setText(catStr);
+        tvCategories.setText(catStr);*/
 
         // Checking for null feed url
         /*if (item.getVideo() != null) {

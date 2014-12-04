@@ -13,6 +13,7 @@
         android:textAppearance="?android:attr/textAppearanceListItemSmall"
         android:gravity="center_vertical"
         android:paddingRight="10dp"
-        android:paddingLeft="10dp"/>
+        android:paddingLeft="10dp"
+        />
 
 </RelativeLayout>
