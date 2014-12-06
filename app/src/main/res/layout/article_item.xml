@@ -49,18 +49,19 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Категории: "
             android:id="@+id/tvCategories"
-            android:paddingLeft="7dp"
             android:background="#ffffcd00"
             android:textColor="@color/msu_bg"
-            android:paddingBottom="5dp" />
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp" />
 
-        <com.example.alexey.msu.FeedImageView
+        <com.springlabs.msulife.FeedImageView
             android:id="@+id/mainImg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:visibility="visible"
-            android:src="@drawable/placeholder" />
+            android:src="@drawable/placeholder"
+            android:maxHeight="100dp" />
 
         <TextView
             android:id="@+id/tvContent"
@@ -81,52 +82,40 @@
             android:text="http://jsonviewer.stack.hu/"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tvRead"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:linksClickable="false"
-            android:text="Читать дальше..."
-            android:textColor="@color/link"
-            android:textStyle="italic"
-            android:layout_gravity="right"
-            android:paddingRight="10dp" />
-
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/feed_item_padding_left_right"
-            android:paddingRight="@dimen/feed_item_padding_left_right"
-            android:visibility="gone">
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="5dp"
+            android:weightSum="1"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
 
-            <LinearLayout
-                android:layout_width="fill_parent"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/feed_item_profile_info_padd"
-                android:paddingRight="@dimen/feed_item_padding_left_right">
+                android:id="@+id/imageView"
+                android:src="@drawable/views" />
 
-                <TextView
-                    android:id="@+id/tvPostId"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/feed_item_profile_name"/>
+            <TextView
+                android:id="@+id/tvCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="5"
+                android:text="20"
+                android:layout_weight="0.99"
+                android:paddingRight="4dp" />
 
-                <TextView
-                    android:id="@+id/tvPostCreatedAt"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/timestamp"
-                    android:textSize="@dimen/feed_item_timestamp" />
-
-                <TextView
-                    android:id="@+id/tvPostUpdatedAt"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/timestamp"
-                    android:textSize="@dimen/feed_item_timestamp" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvRead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:linksClickable="false"
+                android:text="Читать дальше..."
+                android:textColor="@color/link"
+                android:textStyle="italic"
+                android:layout_gravity="right"/>
         </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

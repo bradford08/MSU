@@ -3,10 +3,73 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Все права на фото и текст принадлежат их авторам, но распространяются на свободных правах creative commons при ссылке на источник. У нас нет 300 тыс. подписчиков, поэтому никакие лицензии СМИ нам не нужны."
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingTop="10dp"
+        android:textSize="18dp"
+        android:textIsSelectable="false"
+        android:paddingBottom="30dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="MSU Life "
+        android:textSize="21dp"
+        android:textIsSelectable="false"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/msuLink"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:linksClickable="true"
+        android:textColorLink="@color/link"
+        android:text="http://msulife.com/"
+        android:textSize="18dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Сделано в Spring Labs."
+        android:textSize="21dp"
+        android:textIsSelectable="false"
+        android:gravity="center"
+        android:paddingTop="20dp" />
+
+    <TextView
+        android:id="@+id/slLink"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:linksClickable="true"
+        android:textColorLink="@color/link"
+        android:text="http://spring-labs.ru/"
+        android:textSize="18dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Москва. 2014г"
+        android:textSize="21dp"
+        android:textIsSelectable="false"
+        android:gravity="center"
+        android:paddingTop="35dp" />
 
     <ImageView
-        android:layout_width="111dp"
-        android:layout_height="111dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:src="@drawable/mp" />
+        android:src="@drawable/springlabs_label"
+        android:layout_gravity="bottom" />
+
 </LinearLayout>

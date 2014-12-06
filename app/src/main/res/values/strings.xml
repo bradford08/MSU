@@ -9,34 +9,34 @@
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
         <item >Новости</item>
-        <item >Хроника</item>
-        <item >Детали</item>
+        <!--<item >Хроника</item>
+        <item >Детали</item>-->
 
         <item >Университет</item>
-        <item >Учеба</item>
+        <!--<item >Учеба</item>
         <item >Спорт</item>
         <item >Наука</item>
         <item >Проекты</item>
         <item >Жизнь</item>
-        <item >Барахолка</item>
+        <item >Барахолка</item>-->
 
         <item >Лица</item>
-        <item >Дело</item>
+        <!--<item >Дело</item>
         <item >Творчество</item>
-        <item >Мнения</item>
+        <item >Мнения</item>-->
 
         <item >Медиа</item>
-        <item >Фото</item>
-        <item >Видео</item>
+        <!--<item >Фото</item>
+        <item >Видео</item>-->
 
         <item >Мир</item>
 
         <item >Развлечения</item>
-        <item >Места</item>
+        <!--<item >Места</item>
         <item >События</item>
         <item >Концерты</item>
         <item >Театр</item>
-        <item >Киноклубы</item>
+        <item >Киноклубы</item>-->
 
         <item >Разное</item>
 

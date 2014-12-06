@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <com.example.alexey.msu.FeedImageView
-        xmlns:custom="http://schemas.android.com/apk/res/com.example.alexey.msu"
+    <com.springlabs.msulife.FeedImageView
+        xmlns:custom="http://schemas.android.com/apk/res/com.springlabs.msulife"
         android:id="@+id/imgDisplay"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
