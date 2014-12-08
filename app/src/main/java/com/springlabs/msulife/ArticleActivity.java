@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.example.alexey.msulife.R;
 
 import java.util.ArrayList;
 

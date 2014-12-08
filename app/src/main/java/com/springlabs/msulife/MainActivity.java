@@ -1,22 +1,32 @@
 package com.springlabs.msulife;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.example.alexey.msulife.R;
 
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -33,42 +43,70 @@ public class MainActivity extends Activity {
 
     private String[] navMenuTitles;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    //private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private ArrayList<NavDrawerItem> navDrawerItems;
-    private NavDrawerListAdapter navAdapter;
 
+    //EXPANDBURR
+    ExpandableListAdapter navAdapter;
+    ExpandableListView mDrawerList;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // load slide menu items
-        navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
+        //navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
 
         mTitle = mDrawerTitle = getTitle();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+        mDrawerList = (ExpandableListView) findViewById(R.id.list_slidermenu);
 
-        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
+        prepareListData();
 
-        // Setting the nav drawer list adapter
-
-        navDrawerItems = new ArrayList<NavDrawerItem>();
-
-        navDrawerItems.add(new NavDrawerItem("Все новости"));
-        for (int i = 0; i < navMenuTitles.length; i++)
-            navDrawerItems.add(new NavDrawerItem(navMenuTitles[i]));
-
-        // setting the nav drawer list adapter
-        navAdapter = new NavDrawerListAdapter(getApplicationContext(),
-                navDrawerItems);
+        navAdapter = new NavDrawerExpandableListAdapter(this,
+                listDataHeader, listDataChild);
         mDrawerList.setAdapter(navAdapter);
 
+        // Listview Group click listener
+        mDrawerList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                                        int groupPosition, long id) {
+                if (listDataChild.get(listDataHeader.get(groupPosition)) == null) {
+                    mDrawerList.setGroupIndicator(null);
+                    mTitle = listDataHeader.get(groupPosition);
+                    displayView((String) mTitle);
+                    return false;
+                } else {
+                    return false;
+                }
+            }
+        });
+        // Listview on child click listener
+        mDrawerList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                if (listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition)
+                        .equals("Вся рубрика")) {
+                    mTitle = listDataHeader.get(groupPosition);
+                    displayView((String) mTitle);
+
+                } else {
+                    mTitle = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
+                    displayView((String) mTitle);
+                }
+                return false;
+            }
+        });
 
         // Enabling action bar app icon and behaving it as toggle button
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -90,8 +128,70 @@ public class MainActivity extends Activity {
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(0);
+            displayView("Все новости");
         }
+
+    }
+
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("Все новости");
+
+        listDataHeader.add("Новости");
+        listDataHeader.add("Университет");
+        listDataHeader.add("Лица");
+        listDataHeader.add("Медиа");
+        listDataHeader.add("Мир");
+        listDataHeader.add("Развлечения");
+        listDataHeader.add("Разное");
+
+
+        // Adding child data
+        List<String> news = new ArrayList<String>();
+        news.add("Вся рубрика");
+        news.add("Хроника");
+        news.add("Детали");
+
+        List<String> university = new ArrayList<String>();
+        university.add("Вся рубрика");
+        university.add("Учеба");
+        university.add("Спорт");
+        university.add("Наука");
+        university.add("Проекты");
+        university.add("Жизнь");
+        university.add("Барахолка");
+
+        List<String> faces = new ArrayList<String>();
+        faces.add("Вся рубрика");
+        faces.add("Дело");
+        faces.add("Творчество");
+        faces.add("Мнения");
+
+        List<String> media = new ArrayList<String>();
+        media.add("Вся рубрика");
+        media.add("Фото");
+        media.add("Видео");
+
+        List<String> entertainment = new ArrayList<String>();
+        entertainment.add("Вся рубрика");
+        entertainment.add("Места");
+        entertainment.add("События");
+        entertainment.add("Концерты");
+        entertainment.add("Театр");
+        entertainment.add("Киноклубы");
+
+        listDataChild.put(listDataHeader.get(0), null);
+        listDataChild.put(listDataHeader.get(1), news); // Header, Child data
+        listDataChild.put(listDataHeader.get(2), university);
+        listDataChild.put(listDataHeader.get(3), faces);
+        listDataChild.put(listDataHeader.get(4), media);
+        listDataChild.put(listDataHeader.get(5), null);
+        listDataChild.put(listDataHeader.get(6), entertainment);
+        listDataChild.put(listDataHeader.get(7), null);
+
     }
 
     @Override
@@ -99,45 +199,24 @@ public class MainActivity extends Activity {
         mTitle = title;
         getActionBar().setTitle(mTitle);
     }
-    /**
-     * Navigation drawer menu item click listener
-     * */
-    private class SlideMenuClickListener implements
-            ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            // display view for selected nav drawer item
-            displayView(position);
-        }
-    }
 
     /**
      * Diplaying fragment view for selected nav drawer list item
      * */
-    private void displayView(int position) {
+    private void displayView(String position) {
         // update the main content by replacing fragments
         Fragment fragment = null;
-        switch (position) {
-            case 0:
-                fragment = NavDrawerFragment.newInstance(null);
-                break;
-
-            default:
-                String categoryTitle = navDrawerItems.get(position).getTitle();
-                fragment = NavDrawerFragment.newInstance(categoryTitle);
-                break;
+        if (position.equals("Все новости")) {
+            fragment = NavDrawerFragment.newInstance(null);
+        } else {
+            fragment = NavDrawerFragment.newInstance(position);
         }
 
         if (fragment != null) {
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.frame_container, fragment).commit();
-
-            // update selected item and title, then close the drawer
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            setTitle(navDrawerItems.get(position).getTitle());
+            setTitle(position);
             mDrawerLayout.closeDrawer(mDrawerList);
         } else {
             // error in creating fragment
@@ -153,6 +232,7 @@ public class MainActivity extends Activity {
         // if nav drawer is opened, hide the action items
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -202,7 +282,7 @@ public class MainActivity extends Activity {
         // Take appropriate action for each action item click
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                displayView(0);
+                displayView("Все новости");
                 return true;
             case R.id.action_settings:
                 Intent intent = new Intent(getApplicationContext(), AboutActivity.class);

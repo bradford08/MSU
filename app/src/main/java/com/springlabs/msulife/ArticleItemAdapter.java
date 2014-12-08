@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.example.alexey.msulife.R;
 
 public class ArticleItemAdapter extends BaseAdapter {
     private Activity activity;

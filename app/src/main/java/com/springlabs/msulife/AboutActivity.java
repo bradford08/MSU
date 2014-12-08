@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.alexey.msulife.R;
 
 
 public class AboutActivity extends Activity {

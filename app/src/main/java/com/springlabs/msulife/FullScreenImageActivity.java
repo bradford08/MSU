@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.alexey.msulife.R;
 import com.springlabs.msulife.util.SystemUiHider;
 
 import java.util.ArrayList;

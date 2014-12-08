@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.example.alexey.msulife.R;
 
 
 /**
