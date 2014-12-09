@@ -17,22 +17,12 @@
     <ExpandableListView
         android:id="@+id/list_slidermenu"
         android:layout_width="240dp"
-        android:layout_height="fill_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@color/list_divider"
-        android:dividerHeight="1dp"
-        android:background="@color/msu_head"
-         />
-    <!--<ListView
-        android:id="@+id/list_slidermenu"
-        android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_selector"
-        android:background="@color/msu_bg"
-        />-->
+        android:background="@color/msu_head"
+        />
+
 </android.support.v4.widget.DrawerLayout>

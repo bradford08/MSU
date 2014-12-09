@@ -49,7 +49,6 @@ public class FullScreenImageAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         FeedImageView imgDisplay;
-        //Button btnClose;
 
         inflater = (LayoutInflater) _activity
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -57,12 +56,6 @@ public class FullScreenImageAdapter extends PagerAdapter {
                 false);
 
         imgDisplay = (FeedImageView) viewLayout.findViewById(R.id.imgDisplay);
-        //btnClose = (Button) viewLayout.findViewById(R.id.btnClose);
-
-        /*BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Bitmap bitmap = BitmapFactory.decodeFile(_imagePaths.get(position), options);
-        imgDisplay.setImageBitmap(bitmap);*/
 
         imgDisplay.setImageUrl(articleItems.get(position), imageLoader);
         imgDisplay.setVisibility(View.VISIBLE);
@@ -74,15 +67,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
             public void onSuccess() {
             }
         });
-/*
-        // close button click event
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _activity.finish();
-            }
-        });
-*/
+
         ((ViewPager) container).addView(viewLayout);
 
         return viewLayout;

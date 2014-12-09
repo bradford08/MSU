@@ -1,15 +1,5 @@
 package com.springlabs.msulife;
 
-/**
- * Created by Alexey on 03.10.2014.
- *
- * дополнительный класс для библиотеки volley
- * копировал без изменений
- *
- * Это такой крутой кастомный imageView для библиотеки volley,
- * чтобы не растягивалось загруженное изображение
- *
- */
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.TextUtils;
@@ -69,10 +59,6 @@ public class FeedImageView extends ImageView {
     public FeedImageView(Context context) {
         this(context, null);
     }
-
-    /*public FeedImageView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }*/
 
     public FeedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);

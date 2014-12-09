@@ -4,35 +4,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.alexey.msulife.R;
 
 public class MainActivity extends Activity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String URL_FEED = "http://msulife.com/api/getPosts";
-    private ProgressDialog pDialog;//диалог загрузки
+    private ProgressDialog pDialog;
 
     public static final String KEY_TITLE="title";
     public static final String KEY_CONTENT="content";
@@ -41,14 +34,11 @@ public class MainActivity extends Activity {
     public static final String KEY_POSITION = "";
     public static final String KEY_VIDEO= "video_attachments";
 
-    private String[] navMenuTitles;
     private DrawerLayout mDrawerLayout;
-    //private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private ArrayList<NavDrawerItem> navDrawerItems;
 
     //EXPANDBURR
     ExpandableListAdapter navAdapter;
@@ -60,8 +50,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
-
         mTitle = mDrawerTitle = getTitle();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -69,6 +57,7 @@ public class MainActivity extends Activity {
 
         prepareListData();
 
+        mDrawerList.setGroupIndicator(null);
         navAdapter = new NavDrawerExpandableListAdapter(this,
                 listDataHeader, listDataChild);
         mDrawerList.setAdapter(navAdapter);
@@ -137,9 +126,7 @@ public class MainActivity extends Activity {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
 
-        // Adding child data
         listDataHeader.add("Все новости");
-
         listDataHeader.add("Новости");
         listDataHeader.add("Университет");
         listDataHeader.add("Лица");
@@ -148,8 +135,6 @@ public class MainActivity extends Activity {
         listDataHeader.add("Развлечения");
         listDataHeader.add("Разное");
 
-
-        // Adding child data
         List<String> news = new ArrayList<String>();
         news.add("Вся рубрика");
         news.add("Хроника");
@@ -184,7 +169,7 @@ public class MainActivity extends Activity {
         entertainment.add("Киноклубы");
 
         listDataChild.put(listDataHeader.get(0), null);
-        listDataChild.put(listDataHeader.get(1), news); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), news);
         listDataChild.put(listDataHeader.get(2), university);
         listDataChild.put(listDataHeader.get(3), faces);
         listDataChild.put(listDataHeader.get(4), media);

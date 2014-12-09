@@ -50,7 +50,7 @@ public class NavDrawerFragment extends Fragment {
 
     private String selectedCategory;
 
-    public Cache cache = AppController.getInstance().getRequestQueue().getCache();
+    //public Cache cache = AppController.getInstance().getRequestQueue().getCache();
     private static final String URL_FEED = "http://msulife.com/api/getPosts";
 
     public NavDrawerFragment() {
@@ -79,14 +79,14 @@ public class NavDrawerFragment extends Fragment {
         else
             selectedCategory = null;
 
-        Cache.Entry entry = cache.get(URL_FEED);
+        //Cache.Entry entry = cache.get(URL_FEED);
 
         // Showing progress dialog before making http request
         pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage("Загрузка...");
         pDialog.show();
 
-        //кэш volley
+        //неработающий кэш volley =(
         /*if (entry != null) {
             // fetch the data from cache
             try {
@@ -212,7 +212,7 @@ public class NavDrawerFragment extends Fragment {
                 public void onClick(DialogInterface dialog, int which) {
                 }
             });
-            alertDialog.setIcon(R.drawable.ic_launcher_small);
+            alertDialog.setIcon(R.drawable.ic_launcher);
             alertDialog.show();
         }
 
